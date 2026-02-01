@@ -39,7 +39,9 @@ const createUser = async (req, res) => {
                 maxAge: 15 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
             })
-            return response(res, 201, "User Created Successfully", { createdUser, token });
+
+            const { password: _, ...userWithoutPassword } = createdUser;
+            return response(res, 201, "User Created Successfully", { createdUser: userWithoutPassword, token });
         }
     } catch (error) {
         console.error("Internal Server Error", error);
@@ -73,7 +75,9 @@ const loginUser = async (req, res) => {
             maxAge: 15 * 24 * 60 * 60 * 1000,
             httpOnly: true,
         })
-        return response(res, 200, "User Logged in Successfully", { user, token });
+
+        const { password: _, ...userWithoutPassword } = user;
+        return response(res, 200, "User Logged in Successfully", { user: userWithoutPassword, token });
     } catch (error) {
         console.error("Internal Server Error", error);
         return response(res, 500, "Internal Server Error")
