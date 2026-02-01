@@ -64,8 +64,49 @@ const getItemData = async (req, res) => {
         return response(res, 500, "Internal Server Error")
     }
 }
+const getAllItems = async (req, res) => {
+    try {
+        const items = await prisma.item.findMany()
+        if (items.length === 0) {
+            return response(res, 404, "Items Not Found", null)
+        }
+        else {
+            return response(res, 200, "Items Found", items)
+        }
+    } catch (error) {
+        console.error("error in itemController", error);
+        return response(res, 500, "Internal Server Error")
+    }
+}
+
+const getOwnedItems = async (req, res) => {
+    try {
+        const userId = req.user.userId; // Assuming middleware sets this
+        // Check if user exists (middleware does auth, but let's be safe or just trust token)
+
+        const items = await prisma.item.findMany({
+            where: {
+                userId: userId
+            }
+        });
+
+        if (items.length === 0) {
+            // 200 OK with empty array is better than 404 for "no items found for this user"
+            // but user wants to display them, so let's just return the empty list
+            return response(res, 200, "No Items Found", [])
+        } else {
+            return response(res, 200, "Owned Items Found", items)
+        }
+
+    } catch (error) {
+        console.error("error in getOwnedItems", error);
+        return response(res, 500, "Internal Server Error")
+    }
+}
 
 module.exports = {
     addItem,
-    getItemData
+    getItemData,
+    getAllItems,
+    getOwnedItems
 }

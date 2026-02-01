@@ -12,7 +12,10 @@ const itemRouter = require("./routes/itemRoutes");
 const morgan = require("morgan");
 
 app.use(morgan("dev"));
-app.use(cors());
+app.use(cors({
+    origin: true, // Reflects the request origin, allowing any domain
+    credentials: true // Allows cookies to be sent
+}));
 app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
