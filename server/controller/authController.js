@@ -35,7 +35,7 @@ const createUser = async (req, res) => {
             })
             //create token for the user validity 
             const token = generateWebToken(createdUser.id);
-            res.cookie("x-auth-token", token, {
+            res.cookie("x_auth_token", token, {
                 maxAge: 15 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
             })
@@ -69,7 +69,7 @@ const loginUser = async (req, res) => {
             return response(res, 401, "Invalid Password");
         }
         const token = generateWebToken(user.id);
-        res.cookie("x-auth-token", token, {
+        res.cookie("x_auth_token", token, {
             maxAge: 15 * 24 * 60 * 60 * 1000,
             httpOnly: true,
         })
@@ -81,7 +81,7 @@ const loginUser = async (req, res) => {
 }
 const logout = async (req, res) => {
     try {
-        res.cookie("x-auth-token", "", { expires: new Date(0) })
+        res.cookie("x_auth_token", "", { expires: new Date(0) })
         return response(res, 200, "Logout Successfull")
     } catch (error) {
         console.error("Internal Server Error", error);
