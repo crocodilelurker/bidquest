@@ -10,8 +10,11 @@ router.get("/", (req, res) => {
         "health": "ok"
     })
 })
-
+// routes for getting an item detail and adding an item 
 router.post("/add", authMiddleware, itemController.addItem);
+router.get("/:id", itemController.getItemData)
+
+
 
 module.exports = router;
 

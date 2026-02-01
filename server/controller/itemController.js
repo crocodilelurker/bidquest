@@ -3,13 +3,11 @@ const z = require("zod");
 const prisma = require("../lib/prisma");
 const addItem = async (req, res) => {
     try {
-        //get userId from x-auth-token decoder
         const userId = req.user.userId;
         const { name, description, price, image, category } = req.body;
         if (!name || !description || !price || !image || !category) {
             return response(res, 400, "Bad Request Missing Fields", null)
         }
-        //verify type using zod
         const itemSchema = z.object({
             name: z.string(),
             description: z.string(),
@@ -46,6 +44,28 @@ const addItem = async (req, res) => {
     }
 }
 
+const getItemData = async (req, res) => {
+    try {
+        let itemId = req.params.id;
+        itemId = Number(itemId)
+        const item = await prisma.item.findUnique({
+            where: {
+                id: itemId
+            }
+        })
+        if (!item) {
+            return response(res, 404, "Item Not Found", null);
+        }
+        else {
+            return response(res, 200, "Item Found", item);
+        }
+    } catch (error) {
+        console.error("error in itemController", error);
+        return response(res, 500, "Internal Server Error")
+    }
+}
+
 module.exports = {
-    addItem
+    addItem,
+    getItemData
 }
